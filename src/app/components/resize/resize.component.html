@@ -1,1 +1,17 @@
-<p>resize works!</p>
+<div id="container" class="container" appResizable>
+  <div class="left" [style.width.px]="left"></div>
+  <div
+    id="handler-left"
+    class="resize-handler"
+    cdkDrag
+    cdkDragLockAxis="x"
+    (cdkDragMoved)="onResizeLeftColumn($event)"
+  ></div>
+  <div class="main"></div>
+</div>
+
+<div>container width: {{ containerWidth }}</div>
+<div>left: {{ left }}</div>
+<div>right: {{ right }}</div>
+<div>x: {{ x }}</div>
+<div>offsetX: {{ offsetX }}</div>

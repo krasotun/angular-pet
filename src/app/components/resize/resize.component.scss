@@ -1,0 +1,33 @@
+.container {
+  display: flex;
+}
+.container div {
+  height: 50vh;
+}
+
+.main {
+  flex: 1;
+}
+
+.resize-handler {
+  cursor: ew-resize;
+  color: black;
+  width: 3px;
+  background-color: yellow;
+  position: absolute;
+}
+
+.resize-handler:hover {
+  width: 5px;
+  cursor: col-resize;
+}
+
+.left,
+.right {
+  background-color: lightblue;
+}
+
+.main {
+  background-color: tomato;
+  // min-width: 50px;
+}
