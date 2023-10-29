@@ -8,6 +8,9 @@ import {
   OnInit,
 } from '@angular/core';
 
+import { Observable, fromEvent, of } from 'rxjs';
+import { switchMap, map, takeUntil } from 'rxjs/operators';
+
 @Directive({
   selector: '[appResizable]',
 })
@@ -15,8 +18,8 @@ export class ResizableDirective implements OnInit {
   @ContentChild('resizeHandler', { static: true })
   private _resizeHandler?: ElementRef;
 
-  @HostBinding('style.width')
-  private _width?: string;
+  private readonly _mouseUp$ = fromEvent(this._document, 'mouseup');
+  private readonly _mouseMove$ = fromEvent(this._document, 'mousemove');
 
   constructor(
     @Inject(DOCUMENT)
@@ -27,6 +30,28 @@ export class ResizableDirective implements OnInit {
   ngOnInit(): void {
     if (this._resizeHandler) {
       this._resizeHandler.nativeElement.style.cursor = 'col-resize';
+
+      const dragStart$: Observable<MouseEvent> = fromEvent(
+        this._resizeHandler.nativeElement,
+        'mousedown'
+      );
+
+      const dragMove$ = dragStart$.pipe(
+        switchMap((startEvent) =>
+          this._mouseMove$.pipe(
+            map((moveEvent) => {
+              return (moveEvent as MouseEvent).x - (startEvent as MouseEvent).x;
+            }),
+            takeUntil(this._mouseUp$)
+          )
+        )
+      );
+      const currentWidth = this._el.nativeElement.offsetWidth;
+
+      dragMove$.subscribe((delta) => {
+        const newWidth = `${currentWidth + delta}px`;
+        this._el.nativeElement.style.width = newWidth;
+      });
     }
   }
 }
