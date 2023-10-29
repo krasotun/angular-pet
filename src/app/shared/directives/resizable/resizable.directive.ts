@@ -40,15 +40,19 @@ export class ResizableDirective implements OnInit {
         switchMap((startEvent) =>
           this._mouseMove$.pipe(
             map((moveEvent) => {
-              return (moveEvent as MouseEvent).x - (startEvent as MouseEvent).x;
+              return {
+                delta:
+                  (moveEvent as MouseEvent).x - (startEvent as MouseEvent).x,
+                widthIntoGrag: this._el.nativeElement.offsetWidth,
+              };
             }),
             takeUntil(this._mouseUp$)
           )
         )
       );
-      const currentWidth = this._el.nativeElement.offsetWidth;
+      let currentWidth = this._el.nativeElement.offsetWidth;
 
-      dragMove$.subscribe((delta) => {
+      dragMove$.subscribe(({ delta, widthIntoGrag }) => {
         const newWidth = `${currentWidth + delta}px`;
         this._el.nativeElement.style.width = newWidth;
       });
