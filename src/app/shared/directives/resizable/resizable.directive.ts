@@ -1,10 +1,11 @@
-import { Directive, ElementRef } from '@angular/core';
+import { Directive, ElementRef, HostBinding } from '@angular/core';
 
 @Directive({
   selector: '[appResizable]',
 })
 export class ResizableDirective {
-  constructor(private readonly _el: ElementRef) {
-    console.log(this._el);
-  }
+  @HostBinding('style.width')
+  private _width?: string;
+
+  constructor(private readonly _el: ElementRef) {}
 }
